@@ -94,13 +94,16 @@ if __name__=="__main__":
     if '--dry-run' in sys.argv:
         for tweet in recent_source_tweets:
             if retweeted(tweet):
-                print("retweet {}, #{}".format(tweet.text, source_status_id(tweet)))
+                print("retweet {!r}, #{!r}".format(tweet.text, source_status_id(tweet)))
             else:
-                print("tweet:{} irt:{}".format(tweet.text, new_tweet_ids.get(tweet.in_reply_to_status_id)))
+                print("tweet:{!r} irt:{!r}".format(tweet.text, new_tweet_ids.get(tweet.in_reply_to_status_id)))
     else:
         for tweet in recent_source_tweets:
             if retweeted(tweet):
-                status = api.retweet(id=source_status_id(tweet))
+                try:
+                    status = api.retweet(id=source_status_id(tweet))
+                except:
+                    pass
             else:
                 text = html_parser.unescape(tweet.text)
                 status = api.update_status(status=text, in_reply_to_status_id=new_tweet_ids.get(tweet.in_reply_to_status_id))
